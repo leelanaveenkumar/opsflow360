@@ -1,0 +1,4 @@
+date,station,department,shift,process_path,planned_volume,actual_volume,planned_labour_hours,actual_labour_hours,units_per_hour,defects,defect_rate,backlog,on_time_dispatch_pct,sla_breaches,safety_incidents,absenteeism_pct,cost_per_unit,manager_notes
+2026-04-30,LHR-East,Pick,Morning,Single Pick,6200,6030,72,70,86.14,64,1.06,190,97.8,4,0,4.2,0.34,On track
+2026-04-30,LHR-East,Pack,Twilight,Pack Single,5700,5420,68,72,75.28,130,2.40,370,94.5,8,1,7.6,0.41,Quality and safety coaching required
+2026-04-30,DRT-London,Dispatch,Night,Truck Load,5900,5310,74,79,67.22,78,1.47,610,91.2,11,0,9.1,0.48,Review labour gap and dispatch handoff
