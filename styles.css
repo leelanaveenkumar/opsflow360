@@ -128,3 +128,73 @@ th { background: #f2f6fb; color: #50627a; font-size: .78rem; text-transform: upp
   .page { padding:0; }
   .panel, .kpi-card { box-shadow:none; break-inside: avoid; }
 }
+
+/* Simple login override: removes the marketing hero layout from the login page */
+.login-shell.simple-login {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: linear-gradient(180deg, #f6f8fc 0%, #eef3f9 100%);
+  color: var(--ink);
+}
+.simple-login-card {
+  width: min(420px, 100%);
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+.simple-login-card .login-brand {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 22px;
+}
+.simple-login-card .logo {
+  font-size: 1.2rem;
+}
+.simple-login-card h2 {
+  text-align: center;
+  margin: 0 0 8px;
+  font-size: 1.8rem;
+}
+.simple-login-card > p {
+  text-align: center;
+  margin: 0 0 22px;
+  color: var(--muted);
+}
+.login-disclaimer {
+  display: block;
+  margin-top: 16px;
+  text-align: center;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+
+/* Simplified dashboard layout overrides */
+.app-shell { grid-template-columns: 240px 1fr; }
+.sidebar { padding: 20px 14px; }
+.topbar { padding: 14px 22px; }
+.page { padding: 20px 22px 32px; }
+.simple-filters { grid-template-columns: repeat(4, minmax(140px, 1fr)); }
+.filter-action { display: flex; align-items: end; }
+.simple-card-grid { grid-template-columns: repeat(4, minmax(170px, 1fr)); }
+.simple-dashboard-grid { display:grid; grid-template-columns: 1.4fr 1fr; gap:16px; margin-top:16px; }
+.nav button { padding: 10px 12px; }
+.side-card { font-size: .84rem; }
+.kpi-card .value { font-size: 1.4rem; }
+.panel p { margin-top: 0; }
+
+@media (max-width: 1180px) {
+  .simple-filters { grid-template-columns: repeat(2, minmax(140px, 1fr)); }
+  .simple-card-grid { grid-template-columns: repeat(2, 1fr); }
+  .simple-dashboard-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 780px) {
+  .simple-filters { grid-template-columns: 1fr; }
+  .simple-card-grid { grid-template-columns: 1fr; }
+}

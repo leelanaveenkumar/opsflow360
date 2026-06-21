@@ -43,7 +43,9 @@ Demo authentication is stored in the browser only. It is not production security
 - Leadership Principles mapping page
 - README / project notes page inside the app
 
-## Data
+## Data source
+
+The app uses **synthetic demo data only**. The primary dataset is generated inside `app.js` by the `generateSyntheticData()` function. It does not use real Amazon data, customer data, employee data, package data, route data, or confidential employer data. A separate explanation is included in `DATA_SOURCE.md`.
 
 The app generates seeded synthetic operations records from **2025-01-01 to 2026-04-30** across:
 
