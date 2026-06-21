@@ -25,15 +25,17 @@ const PROCESS_PATHS = {
   Dispatch: ['Ship Sort', 'Truck Load']
 };
 const ROLE_ACCESS = {
-  Admin: ['dashboard','departments','stations','capacity','safety','reports','upload','users','story','principles','notes'],
-  Manager: ['dashboard','departments','stations','capacity','safety','reports','upload','story','principles','notes'],
-  Viewer: ['dashboard','departments','stations','capacity','safety','reports','story','principles','notes']
+  Admin: ['dashboard','departments','capacity','reports','story','notes'],
+  Manager: ['dashboard','departments','capacity','reports','story','notes'],
+  Viewer: ['dashboard','departments','capacity','reports','story','notes']
 };
 const NAV = [
-  ['dashboard','📊','Dashboard'], ['departments','🏭','Department Performance'], ['stations','📍','Station Performance'],
-  ['capacity','🧮','Shift Planning'], ['safety','🦺','Safety & Escalations'], ['reports','⬇️','Reports Hub'],
-  ['upload','📤','Upload CSV'], ['users','👥','User Management'], ['story','⭐','Interview Story'],
-  ['principles','🧭','Leadership Principles'], ['notes','📘','README Notes']
+  ['dashboard','📊','Dashboard'],
+  ['departments','🏭','Department Summary'],
+  ['capacity','🧮','Shift Planning'],
+  ['reports','⬇️','Reports'],
+  ['story','⭐','Interview Story'],
+  ['notes','📘','Project Notes']
 ];
 
 function seededRandom(seed) {
@@ -186,34 +188,25 @@ function render() {
 }
 function loginView() {
   return `
-  <main class="login-shell">
-    <section class="login-left">
-      <div class="logo"><span class="logo-mark">O</span><span>OpsFlow360</span></div>
-      <div class="hero">
-        <h1>Fulfilment operations, explained with data.</h1>
-        <p>A GitHub-ready portfolio dashboard built around the fulfilment flow: Receive, Stow, Pick, Pack, SLAM and Dispatch. It uses synthetic data to demonstrate shift leadership, KPI control, root-cause analysis, safety awareness and reporting.</p>
-        <div class="process-strip">
-          ${['Receive','Stow','Pick','Pack','SLAM','Dispatch'].map((p,i)=>`<div class="process-chip"><b>${i+1}. ${p}</b><span>${['Inbound scan and six-side checks','Random stow into pods/shelves','Customer order picking','Boxing and packaging quality','Scan, label, apply, manifest','Sort, load and ship'][i]}</span></div>`).join('')}
-        </div>
+  <main class="login-shell simple-login">
+    <form id="loginForm" class="login-card simple-login-card">
+      <div class="login-brand">
+        <div class="logo"><span class="logo-mark">O</span><span>OpsFlow360</span></div>
       </div>
-      <small>Portfolio demo using synthetic operations data. Not affiliated with any employer.</small>
-    </section>
-    <section class="login-card-wrap">
-      <form id="loginForm" class="login-card">
-        <h2>Login</h2>
-        <p>Use demo credentials to open the dashboard. This is demo authentication only.</p>
-        <div class="form-group"><label>Username or email</label><input id="loginUser" value="admin" autocomplete="username" /></div>
-        <div class="form-group"><label>Password</label><input id="loginPass" type="password" value="1000" autocomplete="current-password" /></div>
-        <button class="primary-btn full">Open Dashboard</button>
-        <div id="loginError" class="error"></div>
-        <div class="demo-box">
-          <b>Demo users</b><br/>
-          Admin: <code>admin</code> / <code>1000</code><br/>
-          Manager: <code>manager</code> / <code>1000</code><br/>
-          Viewer: <code>viewer</code> / <code>1000</code>
-        </div>
-      </form>
-    </section>
+      <h2>Login</h2>
+      <p>Access the fulfilment operations dashboard using demo credentials.</p>
+      <div class="form-group"><label>Username or email</label><input id="loginUser" value="admin" autocomplete="username" /></div>
+      <div class="form-group"><label>Password</label><input id="loginPass" type="password" value="1000" autocomplete="current-password" /></div>
+      <button class="primary-btn full">Open Dashboard</button>
+      <div id="loginError" class="error"></div>
+      <div class="demo-box">
+        <b>Demo users</b><br/>
+        Admin: <code>admin</code> / <code>1000</code><br/>
+        Manager: <code>manager</code> / <code>1000</code><br/>
+        Viewer: <code>viewer</code> / <code>1000</code>
+      </div>
+      <small class="login-disclaimer">Portfolio demo using synthetic operations data. Not affiliated with any employer.</small>
+    </form>
   </main>`;
 }
 function bindLogin() {
@@ -258,19 +251,15 @@ function pageTitle(route) {
 }
 function pageSubtitle(route) {
   return {
-    dashboard:'Executive view of fulfilment performance across flow, labour, quality and safety.',
-    departments:'Monitor the full process path: inbound receive, stow, pick, pack, SLAM and dispatch.',
-    stations:'Compare synthetic fulfilment locations and identify risk areas.',
-    capacity:'Estimate required headcount and labour gap for a shift.',
-    safety:'Track incidents, unsafe behaviours, blocked areas and escalation ageing.',
-    reports:'Download CSV reports and print leadership summaries.',
-    upload:'Append or replace demo operations data with your own CSV.',
-    users:'Manage demo users, roles and feature access.',
+    dashboard:'Simple overview of volume, productivity, service and backlog.',
+    departments:'Quick comparison across Receive, Stow, Pick, Pack, SLAM and Dispatch.',
+    capacity:'Simple labour planning and headcount estimate for a shift.',
+    reports:'Download simple CSV reports and a printable summary.',
     story:'STAR explanation to present this project in an interview.',
-    principles:'Map the dashboard to operations leadership behaviours.',
-    notes:'Project documentation and data dictionary.'
+    notes:'Project notes, data source and usage guide.'
   }[route] || '';
 }
+
 function bindShell() {
   document.querySelectorAll('[data-route]').forEach(btn => btn.addEventListener('click', () => { APP.route = btn.dataset.route; APP.page = 1; render(); }));
   document.getElementById('logout').addEventListener('click', () => { localStorage.removeItem('opsflow_current_user'); APP.user = null; render(); });
@@ -279,37 +268,32 @@ function bindShell() {
   bindPageSpecific();
 }
 function pageContent() {
-  const noFilterPages = ['users','story','principles','notes'];
+  const noFilterPages = ['story','notes'];
   const filter = noFilterPages.includes(APP.route) ? '' : filtersView();
   const content = {
     dashboard: dashboardView,
     departments: departmentsView,
-    stations: stationsView,
     capacity: capacityView,
-    safety: safetyView,
     reports: reportsView,
-    upload: uploadView,
-    users: usersView,
     story: storyView,
-    principles: principlesView,
     notes: notesView
   }[APP.route]();
   return `${filter}${content}<div class="footer-note">Portfolio demo using synthetic operations data. Not affiliated with any employer.</div>`;
 }
+
 function filtersView() {
   const f = APP.filters;
-  const processOptions = ['All', ...new Set(Object.values(PROCESS_PATHS).flat())];
-  return `<div class="filters no-print">
+  return `<div class="filters no-print simple-filters">
     <div><label>Date preset</label><select id="preset"><option value="last30" ${f.preset==='last30'?'selected':''}>Last 30 Days</option><option value="last7" ${f.preset==='last7'?'selected':''}>Last 7 Days</option><option value="mtd" ${f.preset==='mtd'?'selected':''}>Month to Date</option><option value="qtd" ${f.preset==='qtd'?'selected':''}>Quarter to Date</option><option value="custom" ${f.preset==='custom'?'selected':''}>Custom</option></select></div>
-    <div><label>Start</label><input type="date" id="start" value="${f.start}" /></div>
-    <div><label>End</label><input type="date" id="end" value="${f.end}" /></div>
     <div><label>Station</label>${select('station', ['All',...STATIONS], f.station)}</div>
     <div><label>Department</label>${select('department', ['All',...DEPARTMENTS], f.department)}</div>
     <div><label>Shift</label>${select('shift', ['All',...SHIFTS], f.shift)}</div>
-    <div><label>Process Path</label>${select('process_path', processOptions, f.process_path)}</div>
-    <div style="align-self:end"><button id="resetFilters" class="ghost-btn full">Reset</button></div>
+    <div><label>Start</label><input type="date" id="start" value="${f.start}" /></div>
+    <div><label>End</label><input type="date" id="end" value="${f.end}" /></div>
+    <div class="filter-action"><button id="resetFilters" class="ghost-btn full">Reset</button></div>
   </div>`;
 }
+
 function select(id, options, value) { return `<select id="${id}">${options.map(o=>`<option ${o===value?'selected':''}>${o}</option>`).join('')}</select>`; }
 function bindFilters() {
   ['station','department','shift','process_path'].forEach(id => document.getElementById(id)?.addEventListener('change', e => { APP.filters[id] = e.target.value; APP.page=1; render(); }));
@@ -332,30 +316,23 @@ function setPreset(preset) {
 function dashboardView() {
   const a = aggregate();
   return `${kpiGrid(a)}
-  <div class="dashboard-grid">
-    <div class="panel"><h2>Volume & Productivity Trend</h2>${lineChart(dailySeries(APP.filtered), 'actual', 'uph')}</div>
-    <div class="panel"><h2>Automated Insights</h2>${insightsView()}</div>
+  <div class="simple-dashboard-grid">
+    <div class="panel"><h2>Daily Volume Trend</h2><p>Shows processed units and average productivity for the selected period.</p>${lineChart(dailySeries(APP.filtered), 'actual', 'uph')}</div>
+    <div class="panel"><h2>Key Insights</h2>${insightsView()}</div>
   </div>
-  <div class="dashboard-grid">
-    <div class="panel"><h2>Department Comparison</h2>${barChart(groupMetric(APP.filtered,'department','actual_volume'), 'Actual Units')}</div>
-    <div class="panel"><h2>Current Filtered Data</h2>${dataTable(APP.filtered.slice(0, 160), ['date','station','department','shift','actual_volume','units_per_hour','defect_rate','backlog','sla_breaches'])}</div>
-  </div>`;
+  <div class="panel" style="margin-top:16px"><h2>Department Snapshot</h2><p>Quick summary by process area.</p>${departmentSummaryTable()}</div>`;
 }
+
 function kpiGrid(a) {
   const cards = [
-    ['Total Units', fmt(a.actual), 'Actual processed volume', a.capacity >= 98 ? 'good' : a.capacity >= 92 ? 'warn' : 'bad'],
+    ['Total Units', fmt(a.actual), 'Processed units in the selected view', a.capacity >= 98 ? 'good' : a.capacity >= 92 ? 'warn' : 'bad'],
     ['UPH', fmt(a.uph,1), 'Units per labour hour', a.uph >= 80 ? 'good' : a.uph >= 65 ? 'warn' : 'bad'],
-    ['On-Time Dispatch', pct(a.onTime,1), 'Average dispatch reliability', a.onTime >= 96 ? 'good' : a.onTime >= 92 ? 'warn' : 'bad'],
-    ['Defect Rate', pct(a.defectRate,2), 'Defects / actual volume', a.defectRate <= 1.5 ? 'good' : a.defectRate <= 2.8 ? 'warn' : 'bad'],
-    ['Backlog', fmt(a.backlog), 'Unprocessed planned units', a.backlog < 25000 ? 'good' : a.backlog < 70000 ? 'warn' : 'bad'],
-    ['Capacity Utilisation', pct(a.capacity,1), 'Actual / planned volume', a.capacity >= 98 ? 'good' : a.capacity >= 92 ? 'warn' : 'bad'],
-    ['Safety Incidents', fmt(a.incidents), 'Logged incident count', a.incidents <= 4 ? 'good' : a.incidents <= 12 ? 'warn' : 'bad'],
-    ['SLA Breaches', fmt(a.sla), 'Service exceptions', a.sla < 600 ? 'good' : a.sla < 1600 ? 'warn' : 'bad'],
-    ['Cost Per Unit', money(a.cost), 'Average operational cost', a.cost <= .42 ? 'good' : a.cost <= .55 ? 'warn' : 'bad'],
-    ['Absenteeism', pct(a.absenteeism,1), 'Average labour absence', a.absenteeism <= 6 ? 'good' : a.absenteeism <= 9 ? 'warn' : 'bad']
+    ['On-Time Dispatch', pct(a.onTime,1), 'Service reliability', a.onTime >= 96 ? 'good' : a.onTime >= 92 ? 'warn' : 'bad'],
+    ['Backlog', fmt(a.backlog), 'Unprocessed planned units', a.backlog < 25000 ? 'good' : a.backlog < 70000 ? 'warn' : 'bad']
   ];
-  return `<div class="card-grid">${cards.map(c=>`<div class="kpi-card"><div class="label">${c[0]}</div><div class="value">${c[1]}</div><div class="hint">${c[2]}</div><span class="trend ${c[3]}">${statusText(c[3])}</span></div>`).join('')}</div>`;
+  return `<div class="card-grid simple-card-grid">${cards.map(c=>`<div class="kpi-card"><div class="label">${c[0]}</div><div class="value">${c[1]}</div><div class="hint">${c[2]}</div><span class="trend ${c[3]}">${statusText(c[3])}</span></div>`).join('')}</div>`;
 }
+
 function statusText(s) { return s==='good'?'On track':s==='warn'?'Watch':'Action required'; }
 function dailySeries(rows) {
   const g = groupBy(rows, 'date');
@@ -414,25 +391,32 @@ function formatCell(key, v) {
   return escapeHtml(v);
 }
 
+
+function departmentSummaryTable() {
+  const grouped = groupBy(APP.filtered, 'department');
+  const rows = DEPARTMENTS.map(dept => {
+    const g = grouped[dept] || [];
+    const a = aggregate(g);
+    return {
+      department: dept,
+      units: fmt(a.actual),
+      uph: fmt(a.uph, 1),
+      on_time: pct(a.onTime, 1),
+      backlog: fmt(a.backlog)
+    };
+  });
+  return `<div class="table-wrap"><table><thead><tr><th>Department</th><th>Units</th><th>UPH</th><th>On-Time %</th><th>Backlog</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${r.department}</b></td><td>${r.units}</td><td>${r.uph}</td><td>${r.on_time}</td><td>${r.backlog}</td></tr>`).join('')}</tbody></table></div>`;
+}
+
 function departmentsView() {
-  const groups = groupBy(APP.filtered, 'department');
-  const cards = DEPARTMENTS.map(d => {
-    const a = aggregate(groups[d] || []);
-    return `<div class="panel"><h3>${d}</h3><p>${deptDescription(d)}</p>${kpiMini(a)}<button class="tiny-btn" data-dept-filter="${d}">Focus ${d}</button></div>`;
-  }).join('');
-  return `<div class="three-col">${cards}</div><div class="dashboard-grid"><div class="panel"><h2>Department UPH</h2>${barChart(groupMetric(APP.filtered,'department','uph'),'Units per labour hour')}</div><div class="panel"><h2>Department Detail</h2>${dataTable(APP.filtered.slice(0,180), ['date','department','process_path','shift','actual_volume','units_per_hour','defect_rate','manager_notes'])}</div></div>`;
+  const grouped = DEPARTMENTS.map(d => ({ department: d, agg: aggregate(APP.filtered.filter(r => r.department === d)) }));
+  return `<div class="two-col">
+    <div class="panel"><h2>Units by Department</h2><p>Simple view of processed units by process area.</p>${barChart(groupMetric(APP.filtered,'department','actual_volume'), 'Units')}</div>
+    <div class="panel"><h2>Department Summary</h2><p>Use this page to explain where bottlenecks are happening.</p>${departmentSummaryTable()}</div>
+  </div>
+  <div class="panel" style="margin-top:16px"><h2>Manager Notes</h2><div class="table-wrap"><table><thead><tr><th>Department</th><th>Focus</th></tr></thead><tbody>${grouped.map(g=>`<tr><td><b>${g.department}</b></td><td>${g.agg.backlog > 12000 ? 'Backlog elevated; review labour allocation and flow.' : g.agg.onTime < 94 ? 'Service risk; review handoff speed and process delays.' : g.agg.defectRate > 2 ? 'Quality watch; refresh standard work and audit defects.' : 'On track. Continue hourly checks.'}</td></tr>`).join('')}</tbody></table></div></div>`;
 }
-function deptDescription(d) {
-  return {
-    Inbound:'Trucks arrive, inventory is received, checked and moved into totes or cartons.',
-    Stow:'Items are scanned and placed into storage locations using random stow logic.',
-    Pick:'Customer orders are picked from pods/shelves and separated by pack destination.',
-    Pack:'Items are packed, checked and labelled with a package identifier.',
-    SLAM:'Scan, Label, Apply and Manifest checks weight, address, routing and exceptions.',
-    Dispatch:'Packages are sorted by destination and loaded to trucks for downstream delivery.'
-  }[d];
-}
-function kpiMini(a) { return `<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0"><span><b>${fmt(a.actual)}</b><br/><small>Units</small></span><span><b>${fmt(a.uph,1)}</b><br/><small>UPH</small></span><span><b>${pct(a.defectRate,2)}</b><br/><small>Defects</small></span><span><b>${fmt(a.sla)}</b><br/><small>SLA breaches</small></span></div>`; }
+
 function stationsView() {
   const ranked = STATIONS.map(s => ({ station:s, a: aggregate(APP.filtered.filter(r=>r.station===s)) }))
     .map(x => ({...x, score: x.a.onTime - x.a.defectRate*3 - (x.a.incidents*0.15) - Math.min(12, x.a.sla/400)}))
@@ -515,7 +499,7 @@ function principlesView() {
   return `<div class="panel"><h2>Leadership Principles Mapping</h2><div class="table-wrap"><table><thead><tr><th>Principle</th><th>Dashboard Evidence</th></tr></thead><tbody>${rows.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td></tr>`).join('')}</tbody></table></div></div>`;
 }
 function notesView() {
-  return `<div class="panel"><h2>README / Project Notes</h2><p><b>Tech stack:</b> HTML, CSS and vanilla JavaScript. This makes the project easy to host on GitHub Pages without backend setup.</p><p><b>Data:</b> Seeded synthetic records from 2025-01-01 to 2026-04-30 across six fulfilment-style stations, six departments and three shifts. No real employer data is included.</p><p><b>How to use:</b> Login with admin / 1000, filter the dashboard, review insights, download CSV reports, open the Interview Story page and use the Leadership Principles page for interview explanation.</p><p><b>Data dictionary:</b> planned_volume, actual_volume, labour hours, UPH, defects, defect rate, backlog, on-time dispatch %, SLA breaches, safety incidents, absenteeism %, cost per unit and manager notes.</p><p><b>GitHub Pages:</b> Upload this folder to a public repository, enable Pages from main/root or GitHub Actions, then share the generated URL.</p></div>`;
+  return `<div class="panel"><h2>README / Project Notes</h2><p><b>Tech stack:</b> HTML, CSS and vanilla JavaScript. This keeps the project simple, lightweight and easy to host on GitHub Pages without backend setup.</p><p><b>Data:</b> Seeded synthetic records from 2025-01-01 to 2026-04-30 across six fulfilment-style stations, six departments and three shifts. No real employer data is included.</p><p><b>How to use:</b> Login with admin / 1000, filter the dashboard, review insights, download CSV reports, open the Interview Story page and use the Leadership Principles page for interview explanation.</p><p><b>Data dictionary:</b> planned_volume, actual_volume, labour hours, UPH, defects, defect rate, backlog, on-time dispatch %, SLA breaches, safety incidents, absenteeism %, cost per unit and manager notes.</p><p><b>GitHub Pages:</b> Upload this folder to a public repository, enable Pages from main/root or GitHub Actions, then share the generated URL.</p></div>`;
 }
 function bindPageSpecific() {
   bindFilters();
