@@ -25,17 +25,15 @@ const PROCESS_PATHS = {
   Dispatch: ['Ship Sort', 'Truck Load']
 };
 const ROLE_ACCESS = {
-  Admin: ['dashboard','departments','capacity','reports','story','notes'],
-  Manager: ['dashboard','departments','capacity','reports','story','notes'],
-  Viewer: ['dashboard','departments','capacity','reports','story','notes']
+  Admin: ['dashboard','departments','capacity','reports'],
+  Manager: ['dashboard','departments','capacity','reports'],
+  Viewer: ['dashboard','departments','capacity','reports']
 };
 const NAV = [
   ['dashboard','📊','Dashboard'],
   ['departments','🏭','Department Summary'],
   ['capacity','🧮','Shift Planning'],
-  ['reports','⬇️','Reports'],
-  ['story','⭐','Interview Story'],
-  ['notes','📘','Project Notes']
+  ['reports','⬇️','Reports']
 ];
 
 function seededRandom(seed) {
